@@ -1,1 +1,287 @@
+#!/usr/bin/python
+import RPi.GPIO as GPIO
+import time 
 
+# ULTRASONIC SENSOR 
+def setup_sensor (PIN_TRIGGER, PIN_ECHO):
+	GPIO.setup(PIN_TRIGGER, GPIO.OUT)
+	GPIO.setup(PIN_ECHO, GPIO.IN)
+	
+def calculate_distance(PIN_TRIGGER, PIN_ECHO):
+    GPIO.output(PIN_TRIGGER, GPIO.LOW)
+    time.sleep(1)
+    GPIO.output(PIN_TRIGGER, GPIO.HIGH)
+    time.sleep(0.000001)
+    GPIO.output(PIN_TRIGGER, GPIO.LOW)
+    
+        while GPIO.input (PIN_ECHO)==0:
+            pulse_start_time = time.time()
+        while GPIO.input (PIN_ECHO)==1:
+            pulse_end_time = time.time()
+            
+        pulse_duration = pulse_end_time - pulse_start_time
+        distance = round(pulse_duration * 17150, 2)
+        return distance
+        
+def check_distance(): 
+    sensor_pins = [(32, 36, "Main Road - North"), (16, 18, "Main Road - South")
+                   (38, 40, "Side Road - West"), (24, 26, "Side Road - East")] 
+    distances = []
+    
+        for i, (trigger, echo, description) in enumerate(sensor_pins):
+        setup_sensor(trigger, echo)
+        
+        distance_t1 = calculate_distance(trigger, echo)
+        distance_t2 = calculate_distance(trigger, echo) 
+        
+        average_distance = (distance_t1 + distance_t2) / 2
+        
+        print('Distance', (i+1), ':', "{:0.2f}".format(average_distance)
+        distances.append(average_distance)
+        
+def store_distance():
+    distances = check_distance
+    print("---------- [SYSTEM: Calculating Traffic. . . ] ----------")
+    mainrd_nrt = distances[0] < 15
+    mainrd_sth = distances[1] < 15
+    siderd_nrt = distances[2] < 15
+    siderd_sth = distances[3] < 15
+    print("---------- [SYSTEM: Traffic Analysis Complete] ----------")
+    print("                                                         ")
+        
+# LED 
+
+    # GPIO PINS TO CONTROL LED
+LED_RED_MAIN = 31
+LED_YLW_MAIN = 29
+LED_GRN_MAIN = 23
+
+LED_RED_SIDE = 37
+LED_YLW_SIDE = 35
+LED_GRN_SIDE = 33
+
+
+    # TURNS ALL LEDS OFF
+def initialize_leds():
+    print("Initializing Traffic Lights... ")
+    GPIO.output(LED_RED_MAIN,GPIO.LOW)
+    GPIO.output(LED_YLW_MAIN,GPIO.LOW)
+    GPIO.output(LED_GRN_MAIN,GPIO.LOW)
+    
+    GPIO.output(LED_RED_SIDE,GPIO.LOW)
+    GPIO.output(LED_YLW_SIDE,GPIO.LOW)
+    GPIO.output(LED_GRN_SIDE,GPIO.LOW) 
+    print("Initialization Complete")
+    
+    
+    # TURNS ALL LEDS ON
+def test_leds()
+    print("Testing Traffic Lights... ")
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+    GPIO.output(LED_YLW_MAIN,GPIO.HIGH)
+    GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
+    
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+    GPIO.output(LED_YLW_SIDE,GPIO.HIGH)
+    GPIO.output(LED_GRN_SIDE,GPIO.HIGH) 
+    print("Testing Process Complete")
+
+
+    #TURNS MAIN ROAD LIGHTS ON AND OFF
+def defualt_main():
+    initialize_leds()
+    print("Main Road: Default Setting... ")
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(LED_RED_MAIN,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Main Road: Green On [15 Seconds]")
+    GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
+    time.sleep(15)
+    GPIO.output(LED_GRN_MAIN,GPIO.LOW)
+    time.sleep(1)
+ 
+    print("Main Road: Yellow On [5 Seconds]") 
+    GPIO.output(LED_YLW_MAIN,GPIO.HIGH)   
+    time.sleep(5)
+    GPIO.output(LED_YLW_MAIN,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Main Road: Red On [# Second(s)]") 
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)    
+    print("Main Road: Protocol Complete")
+    
+    
+    #TURNS SIDE ROAD LIGHTS ON AND OFF
+def defualt_side():
+    initialize_leds()
+    print("Side Road: Default Setting... ")
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(LED_RED_SIDE,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Side Road: Green On [10 Seconds]")
+    GPIO.output(LED_GRN_SIDE,GPIO.HIGH)
+    time.sleep(10)
+    GPIO.output(LED_GRN_SIDE,GPIO.LOW)
+    time.sleep(1)
+ 
+    print("Side Road: Yellow On [5 Seconds]") 
+    GPIO.output(LED_YLW_SIDE,GPIO.HIGH)   
+    time.sleep(5)
+    GPIO.output(LED_YLW_SIDE,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Side Road: Red On [# Second(s)]") 
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)    
+    print("Side Road: Protocol Complete")
+    
+        
+    #OPENS MAIN ROAD TRAFFIC    
+def open_main():
+    initialize_leds()
+    print("Main Road: Opening... ")
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(LED_RED_MAIN,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Main Road: Green On [# Seconds]")
+    GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
+    time.sleep(1)
+    print("Main Road: Opened")
+    
+    
+    #OPENS SIDE ROAD TRAFFIC
+def open_side():
+    initialize_leds()
+    print("Side Road: Opening... ")
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+    time.sleep(1)
+    GPIO.output(LED_RED_SIDE,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Side Road: Green On [# Seconds]")
+    GPIO.output(LED_GRN_SIDE,GPIO.HIGH)
+    time.sleep(1)
+    print("Side Road: Opened")
+    
+    #CLOSES MAIN ROAD TRAFFIC
+def close_main():
+    initialize_leds()
+    print("Main Road: Closing... ")
+    GPIO.output(LED_GRN_MAIN,GPIO.LOW)
+    time.sleep(1)
+ 
+    print("Main Road: Yellow On [5 Seconds]") 
+    GPIO.output(LED_YLW_MAIN,GPIO.HIGH)   
+    time.sleep(5)
+    GPIO.output(LED_YLW_MAIN,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Main Road: Red On [# Second(s)]") 
+    GPIO.output(LED_RED_MAIN,GPIO.HIGH)    
+    print("Main Road: Closed")   
+
+
+    #CLOSES SIDE ROAD TRAFFIC
+def close_side():
+    initialize_leds()
+    print("Side Road: Closing... ")
+    GPIO.output(LED_GRN_SIDE,GPIO.LOW)
+    time.sleep(1)
+ 
+    print("Side Road: Yellow On [5 Seconds]") 
+    GPIO.output(LED_YLW_SIDE,GPIO.HIGH)   
+    time.sleep(5)
+    GPIO.output(LED_YLW_SIDE,GPIO.LOW)
+    time.sleep(1)
+    
+    print("Side Road: Red On [# Second(s)]") 
+    GPIO.output(LED_RED_SIDE,GPIO.HIGH)    
+    print("Side Road: Closed")   
+    
+
+
+try: 
+    GPIO.setmode(GPIO.BOARD)
+    GPIO.setwarnings(False)
+    LED_PIN = [23, 37, 35, 33, 31, 29]
+    
+    while True: 
+        print("---------- [SYSTEM: NEW CYCLE STARTING. . . .] ----------")
+        print("---------------------------------------------------------")
+        print("                                                         ")
+        
+        store_distance()
+        
+        if (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
+            print("---------- [SYSTEM: Intersection: FULL. . . .] ----------")
+            default_main()
+            default_side()
+            store_distance()
+            while (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
+                print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
+                default_main()
+                default_side()
+                store_distance()
+            print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
+        
+        elif (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth): 
+            print("---------- [SYSTEM: Intersection: MAIN. . . .] ----------")
+            open_main()
+            time.sleep(5)
+            store_distance()
+            while (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth):
+                print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
+                GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
+                time.sleep(1)
+                store_distance()
+            print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
+            close_main()
+            time.sleep(1)
+            open_side()
+            time.sleep(5)
+            close_side()
+            
+        elif (siderd_nrt or siderd_sth) and not (mainrd_nrt or mainrd_sth) : 
+            print("---------- [SYSTEM: Intersection: SIDE. . . .] ----------")
+            open_side()
+            time.sleep(5)
+            store_distance()
+            while (siderd_nrt or siderd_sth) and not (mainrd_nrt or mainrd_sth) : :
+                print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
+                GPIO.output(LED_GRN_SIDE,GPIO.HIGH)
+                time.sleep(1)
+                store_distance()
+            print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
+            close_side()
+            time.sleep(1)
+            open_main()
+            time.sleep(5)
+            close_main()
+            
+        elif not (mainrd_nrt or mainrd_sth or siderd_nrt or siderd_sth):
+            print("---------- [SYSTEM: Intersection: NIL. . . . ] ----------")  
+            initialize_leds()
+            GPIO.output(LED_RED_SIDE,GPIO.HIGH)
+            GPIO.output(LED_RED_MAIN,GPIO.HIGH)
+            
+        else: 
+            print("---------- [SYSTEM: Intersection: N/A. . . . ] ----------")
+            default_main()
+            default_side()
+            
+        print("---------- [SYSTEM: CURRENT CYCLE COMPLETE. .] ----------")
+        print("---------- [SYSTEM: [CTL+C] Interrupt Process] ----------")
+        print("---------------------------------------------------------")
+        print("                                                         ")
+           
+finally:
+    GPIO.cleanup() 
