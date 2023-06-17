@@ -219,30 +219,30 @@ try:
         print("---------------------------------------------------------")
         print("                                                         ")
         
-        store_distance()
+        check_distance()
         
         if (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
             print("---------- [SYSTEM: Intersection: FULL. . . .] ----------")
             default_main()
             default_side()
-            store_distance()
+            check_distance()
             while (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 default_main()
                 default_side()
-                store_distance()
+                check_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
         
         elif (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth): 
             print("---------- [SYSTEM: Intersection: MAIN. . . .] ----------")
             open_main()
             time.sleep(5)
-            store_distance()
+            check_distance()
             while (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth):
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
                 time.sleep(1)
-                store_distance()
+                check_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
             close_main()
             time.sleep(1)
@@ -254,12 +254,12 @@ try:
             print("---------- [SYSTEM: Intersection: SIDE. . . .] ----------")
             open_side()
             time.sleep(5)
-            store_distance()
+            check_distance()
             while (siderd_nrt or siderd_sth) and not (mainrd_nrt or mainrd_sth) : :
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 GPIO.output(LED_GRN_SIDE,GPIO.HIGH)
                 time.sleep(1)
-                store_distance()
+                check_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
             close_side()
             time.sleep(1)
