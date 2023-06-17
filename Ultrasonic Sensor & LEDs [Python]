@@ -23,7 +23,7 @@ def calculate_distance(PIN_TRIGGER, PIN_ECHO):
         distance = round(pulse_duration * 17150, 2)
         return distance
         
-def check_distance()
+def check_distance():
     sensor_pins = [(32, 36, "Main Road - North"), (16, 18, "Main Road - South")
                    (38, 40, "Side Road - West"), (24, 26, "Side Road - East")] 
     distances = []
@@ -48,7 +48,7 @@ def store_distance():
     siderd_sth = distances[3] < 15
     print("---------- [SYSTEM: Traffic Analysis Complete] ----------")
     print("                                                         ")
-        
+
 # LED 
 
     # GPIO PINS TO CONTROL LED
