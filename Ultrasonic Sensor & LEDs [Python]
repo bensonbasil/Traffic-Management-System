@@ -39,7 +39,7 @@ def check_distance():
         print('Distance', (i+1), ':', "{:0.2f}".format(average_distance)
         distances.append(average_distance)
         
-def store_distance():
+def evaluate_distance():
     distances = check_distance
     print("---------- [SYSTEM: Calculating Traffic. . . ] ----------")
     mainrd_nrt = distances[0] < 15
@@ -219,30 +219,30 @@ try:
         print("---------------------------------------------------------")
         print("                                                         ")
         
-        check_distance()
+        evaluate_distance()
         
         if (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
             print("---------- [SYSTEM: Intersection: FULL. . . .] ----------")
             default_main()
             default_side()
-            check_distance()
+            evaluate_distance()
             while (mainrd_nrt or mainrd_sth) and (siderd_nrt or siderd_sth): 
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 default_main()
                 default_side()
-                check_distance()
+                evaluate_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
         
         elif (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth): 
             print("---------- [SYSTEM: Intersection: MAIN. . . .] ----------")
             open_main()
             time.sleep(5)
-            check_distance()
+            evaluate_distance()
             while (mainrd_nrt or mainrd_sth) and not (siderd_nrt or siderd_sth):
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 GPIO.output(LED_GRN_MAIN,GPIO.HIGH)
                 time.sleep(1)
-                check_distance()
+                evaluate_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
             close_main()
             time.sleep(1)
@@ -254,12 +254,12 @@ try:
             print("---------- [SYSTEM: Intersection: SIDE. . . .] ----------")
             open_side()
             time.sleep(5)
-            check_distance()
+            evaluate_distance()
             while (siderd_nrt or siderd_sth) and not (mainrd_nrt or mainrd_sth) : :
                 print("---------- [SYSTEM: Condition (Unchanged). . ] ----------")
                 GPIO.output(LED_GRN_SIDE,GPIO.HIGH)
                 time.sleep(1)
-                check_distance()
+                evaluate_distance()
             print("---------- [SYSTEM: Condition (Changed). . . ] ----------")
             close_side()
             time.sleep(1)
